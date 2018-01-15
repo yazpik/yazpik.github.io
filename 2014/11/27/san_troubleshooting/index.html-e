@@ -1,0 +1,511 @@
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>SAN Troubleshooting Netapp Storage</title>
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" type="text/css" href="../../../../assets/built/screen.css?v=70c15f1e7a">
+
+    <link rel="shortcut icon" href="../../../../favicon.png" type="image/png">
+    <link rel="canonical" href="https://yazpik.github.io/2014/11/27/san_troubleshooting/">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    <link rel="amphtml" href="https://yazpik.github.io/2014/11/27/san_troubleshooting/amp/">
+    
+    <meta property="og:site_name" content="Life of a Sysadmin">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="SAN Troubleshooting Netapp Storage">
+    <meta property="og:description" content="SAN Troubleshooting A couple of years a go, I wrote a basic troubleshooting guide for a SAN environment, but it was never shared. I believe is a good idea to have a list of considerations to take specially when there are a ton of variables to consider, so I've decided">
+    <meta property="og:url" content="https://yazpik.github.io/2014/11/27/san_troubleshooting/">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1509844050455-8070389b0930?ixlib=rb-0.3.5&amp;q=80&amp;fm=jpg&amp;crop=entropy&amp;cs=tinysrgb&amp;w=1080&amp;fit=max&amp;s=c1e1041fd3fd7638c8d2471befdb6598">
+    <meta property="article:published_time" content="2014-11-27T18:15:00.000Z">
+    <meta property="article:modified_time" content="2018-01-14T13:54:09.000Z">
+    <meta property="article:tag" content="troubleshooting">
+    
+    <meta property="article:publisher" content="https://www.facebook.com/yazpik">
+    <meta property="article:author" content="https://www.facebook.com/yazpik">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="SAN Troubleshooting Netapp Storage">
+    <meta name="twitter:description" content="SAN Troubleshooting A couple of years a go, I wrote a basic troubleshooting guide for a SAN environment, but it was never shared. I believe is a good idea to have a list of considerations to take specially when there are a ton of variables to consider, so I've decided">
+    <meta name="twitter:url" content="https://yazpik.github.io/2014/11/27/san_troubleshooting/">
+    <meta name="twitter:image" content="https://images.unsplash.com/photo-1509844050455-8070389b0930?ixlib=rb-0.3.5&amp;q=80&amp;fm=jpg&amp;crop=entropy&amp;cs=tinysrgb&amp;w=1080&amp;fit=max&amp;s=c1e1041fd3fd7638c8d2471befdb6598">
+    <meta name="twitter:label1" content="Written by">
+    <meta name="twitter:data1" content="Francisco Moctezuma">
+    <meta name="twitter:label2" content="Filed under">
+    <meta name="twitter:data2" content="troubleshooting">
+    <meta name="twitter:site" content="@yazpik">
+    <meta name="twitter:creator" content="@yazpik">
+    <meta property="og:image:width" content="1080">
+    <meta property="og:image:height" content="704">
+    
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Life of a Sysadmin",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://yazpik.github.io/favicon.png",
+            "width": 60,
+            "height": 60
+        }
+    },
+    "author": {
+        "@type": "Person",
+        "name": "Francisco Moctezuma",
+        "image": {
+            "@type": "ImageObject",
+            "url": "https://yazpik.github.io/content/images/2018/01/yazpik_vancouver2.png",
+            "width": 1201,
+            "height": 1258
+        },
+        "url": "https://yazpik.github.io/author/yazpik/",
+        "sameAs": [
+            "https://yazpik.github.io",
+            "https://www.facebook.com/yazpik",
+            "https://twitter.com/yazpik"
+        ]
+    },
+    "headline": "SAN Troubleshooting Netapp Storage",
+    "url": "https://yazpik.github.io/2014/11/27/san_troubleshooting/",
+    "datePublished": "2014-11-27T18:15:00.000Z",
+    "dateModified": "2018-01-14T13:54:09.000Z",
+    "image": {
+        "@type": "ImageObject",
+        "url": "https://images.unsplash.com/photo-1509844050455-8070389b0930?ixlib=rb-0.3.5&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1080&fit=max&s=c1e1041fd3fd7638c8d2471befdb6598",
+        "width": 1080,
+        "height": 704
+    },
+    "keywords": "troubleshooting",
+    "description": "SAN Troubleshooting A couple of years a go, I wrote a basic troubleshooting guide for a SAN environment, but it was never shared. I believe is a good idea to have a list of considerations to take specially when there are a ton of variables to consider, so I&#x27;ve decided",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://yazpik.github.io/"
+    }
+}
+    </script>
+
+    <script type="text/javascript" src="../../../../public/ghost-sdk.min.js?v=70c15f1e7a"></script>
+<script type="text/javascript">
+ghost.init({
+	clientId: "ghost-frontend",
+	clientSecret: "d183a5d209a2"
+});
+</script>
+    <meta name="generator" content="Ghost 1.19">
+    <link rel="alternate" type="application/rss+xml" title="Life of a Sysadmin" href="https://yazpik.github.io/rss/">
+    <!-- Global Site Tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=GA_TRACKING_ID"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-56875014-1');
+</script>
+
+</head>
+<body class="post-template tag-troubleshooting">
+
+    <div class="site-wrapper">
+
+        
+
+<header class="site-header outer">
+    <div class="inner">
+        <nav class="site-nav">
+    <div class="site-nav-left">
+                <a class="site-nav-logo" href="https://yazpik.github.io">Life of a Sysadmin</a>
+            <ul class="nav" role="menu">
+    <li class="nav-home" role="menuitem"><a href="https://yazpik.github.io">Home</a></li>
+    <li class="nav-about-me" role="menuitem"><a href="../../../../about-me">About me</a></li>
+    <li class="nav-github" role="menuitem"><a href="../../../../github">Github</a></li>
+</ul>
+
+    </div>
+    <div class="site-nav-right">
+        <div class="social-links">
+                <a class="social-link social-link-fb" href="https://www.facebook.com/yazpik" target="_blank" rel="noopener"><svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 32 32"><path d="M19 6h5V0h-5c-3.86 0-7 3.14-7 7v3H8v6h4v16h6V16h5l1-6h-6V7c0-.542.458-1 1-1z"></path></svg>
+</a>
+                <a class="social-link social-link-tw" href="https://twitter.com/yazpik" target="_blank" rel="noopener"><svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 32 32"><path d="M30.063 7.313c-.813 1.125-1.75 2.125-2.875 2.938v.75c0 1.563-.188 3.125-.688 4.625a15.088 15.088 0 0 1-2.063 4.438c-.875 1.438-2 2.688-3.25 3.813a15.015 15.015 0 0 1-4.625 2.563c-1.813.688-3.75 1-5.75 1-3.25 0-6.188-.875-8.875-2.625.438.063.875.125 1.375.125 2.688 0 5.063-.875 7.188-2.5-1.25 0-2.375-.375-3.375-1.125s-1.688-1.688-2.063-2.875c.438.063.813.125 1.125.125.5 0 1-.063 1.5-.25-1.313-.25-2.438-.938-3.313-1.938a5.673 5.673 0 0 1-1.313-3.688v-.063c.813.438 1.688.688 2.625.688a5.228 5.228 0 0 1-1.875-2c-.5-.875-.688-1.813-.688-2.75 0-1.063.25-2.063.75-2.938 1.438 1.75 3.188 3.188 5.25 4.25s4.313 1.688 6.688 1.813a5.579 5.579 0 0 1 1.5-5.438c1.125-1.125 2.5-1.688 4.125-1.688s3.063.625 4.188 1.813a11.48 11.48 0 0 0 3.688-1.375c-.438 1.375-1.313 2.438-2.563 3.188 1.125-.125 2.188-.438 3.313-.875z"></path></svg>
+</a>
+        </div>
+            <a class="rss-button" href="http://cloud.feedly.com/#subscription/feed/https://yazpik.github.io/rss/" target="_blank" rel="noopener"><svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24"><circle cx="6.18" cy="17.82" r="2.18"></circle><path d="M4 4.44v2.83c7.03 0 12.73 5.7 12.73 12.73h2.83c0-8.59-6.97-15.56-15.56-15.56zm0 5.66v2.83c3.9 0 7.07 3.17 7.07 7.07h2.83c0-5.47-4.43-9.9-9.9-9.9z"></path></svg>
+</a>
+    </div>
+</nav>
+    </div>
+</header>
+
+
+<main id="site-main" class="site-main outer" role="main">
+    <div class="inner">
+
+        <article class="post-full post tag-troubleshooting ">
+
+            <header class="post-full-header">
+                <section class="post-full-meta">
+                    <time class="post-full-meta-date" datetime="2014-11-27">27 November 2014</time>
+                        <span class="date-divider">/</span> <a href="../../../../tag/troubleshooting/">troubleshooting</a>
+                </section>
+                <h1 class="post-full-title">SAN Troubleshooting Netapp Storage</h1>
+            </header>
+
+            <figure class="post-full-image" style="background-image: url(https://images.unsplash.com/photo-1509844050455-8070389b0930?ixlib=rb-0.3.5&amp;q=80&amp;fm=jpg&amp;crop=entropy&amp;cs=tinysrgb&amp;w=1080&amp;fit=max&amp;s=c1e1041fd3fd7638c8d2471befdb6598)">
+            </figure>
+
+            <section class="post-full-content">
+                <div class="kg-card-markdown"><p><strong>SAN Troubleshooting</strong></p>
+<p>A couple of years a go, I wrote a basic troubleshooting guide for a SAN environment, but it was never shared.<br>
+I believe is a good idea to have a list of considerations to take specially when there are a ton of variables to consider, so I've decided to shared this list on my blog,<br>
+If you are working on IT as Storage/Unix/Windows admin, you know how things are durig an issue on production, specially with managers, international teams when no one knows what is really going on and someone important is screaming on the phone waiting for answers.<br>
+This list has truly helped me out asking questions to easily identify what the problem is, and also helps to improve the time to response if you are ready on those critical situations.</p>
+<p>So pretty much I based this guide on past experiences and vendor recommendations.</p>
+<p><img src="../../../../content/images/2018/01/mono_coco.png" alt="mono_coco"></p>
+<h3 id="letscheckthelist">Let's check the list</h3>
+<ol>
+<li>Do not freak out (very important)</li>
+<li>Calm yourself down (breath)</li>
+</ol>
+<p>And we are ready to get the information</p>
+<ul>
+</ul><pre>
+</pre><li>What exactly the problem is? (you will need to understand the situation first)</li>
+<li>What has been changed recently? (sometimes it was just a firmware update/upgrade on the host)</li>
+<li>What is the scope of the problem? </li>
+<li>Is Only one device/application, clustering affected?</li>
+<li>Are any specific protocols or applications related to the problem?</li>
+<li>Is the problem more prevalent at a given time of day or load condition?</li>
+<li>Is this issue impacting reads, writes, both, or something else?</li>
+<li>Is this issue persistent or only happening occasionally?</li>
+
+
+<p>When you get all the information above, you should have a clear view of what is going on.<br>
+Ask for some minutes to perform the next steps... Take your time and remember to be calm.</p>
+<h4 id="nextsteps">Next Steps</h4>
+<pre>
+•	Identify storage controllers – Volumes – LUN’s involved
+
+•	Based on timeline given from (sysadmins/applications teams) generate Latency vs IOPS on volumes/luns involved.
+
+•	Take a look on Fiber channel switch port stats for respective server aliases
+
+•	CRC (cyclic redundancy checking) errors: A high number of CRC errors can indicate a problem with GBIC/SFP connectors or problems with the physical cabling for a given port.
+
+•	Examining port utilization, can help understand throughput and help identify whether there is a bottleneck here.
+
+•	LOGS- check the SAN logs and compare the running configuration to the documentation.
+
+•	Is it SAN reporting events or errors that may be related?
+
+•	Have any recent Storage changes occurred?
+
+•	Are there any SAN-related messages in the hosts system message logs?
+
+•	Can other hosts see the storage controller involved?
+
+•	Is the storage port logged into the FC switch?
+
+•	Create a report and provide your feedback on it
+
+•	Create a case with the Storage vendor if needed.
+
+</pre>
+<h3 id="sowhereisreallytheproblem">So, Where is really the problem ?</h3>
+<p>I got the image from ... honestly I do not remember it was two years a go, but it explains very well where to look at.</p>
+<p><img src="../../../../content/images/2018/01/SAN_Troubleshooting.jpg" alt="SAN_Troubleshooting"></p>
+<h4 id="host">HOST</h4>
+<p><em>Application, Filesystems, Volume manager,Virtual memory, HBA driver</em></p>
+<pre>
+•	Filesystems: check iSCSI, LUN’s ,NFS status include daemons
+•	HBA drivers: Review drives &amp; test SAN surfer, multipathing configuration and how is managed MPP?, HBA status
+</pre>
+<h4 id="storageunit">STORAGE UNIT</h4>
+<p><em>Fiber channel, SAN/LAN switch , Storage controller, Cache, Backend, Disks</em></p>
+<pre>
+•	Fiber channel: On case of many CRC errors request review of fiber jumpers, trunks, patch panel.
+
+•	SAN/LAN switch: Review logs for failed ports CRC errors,
+	ISL disconnections, multipathing, disable ports, power and fan redundant,
+	Save statis and reset counters, gbic status, clock on the same time on both switches, zone status.
+
+•	Storage Controller: Review redundant power supply, fan, connectivity issues to switch,
+	HA enable and working fine.
+
+•	Cache: Review failed memory banks, battery modules, disable modules
+
+•	Back end: Review failed paths, LUN status
+
+•	Disks: Review failed disks, alarm on shelves, connectivity issues, general alarm, firmware problems.
+</pre>
+<h3 id="commonproblemsforadeepexplanationandusefullinks">Common problems for a deep explanation and useful links</h3>
+<p>There is a lot of things can go wrong in a complex Storage Area Network, based on the symptoms, narrowing a problem down to a probable cause in one of these areas should speed troubleshooting and resolution, each failure type can be grouped into one of the following areas:<br>
+(Links are based on Netapp Storage appliance but basically the same kind of logic applies for different vendors such IBM, EMC or HP)</p>
+<h4 id="compatibilityissues">Compatibility issues</h4>
+<ul>
+<li>Check Netapp or SAN vendor compatibility matrix against the host</li>
+<li>Check host vendors software (volume manager) (cluster services), etc.</li>
+</ul>
+<p><a href="https://support.netapp.com/NOW/products/interoperability">https://support.netapp.com/NOW/products/interoperability</a></p>
+<h4 id="volumemanagerissues">Volume Manager Issues</h4>
+<ul>
+<li>Go further with sysadmins and investigate Volume manager used version</li>
+<li>Disk layout Concat vs Stripped</li>
+<li>Is well known disk layout on concat layout can cause performance</li>
+</ul>
+<p><em><strong>A RAID theory</strong></em><br>
+<a href="https://www.cuddletech.com/veritas/raidtheory.html">https://www.cuddletech.com/veritas/raidtheory.html</a></p>
+<p><em><strong>From an SQL admin</strong></em><br>
+<a href="https://sqlblog.com/blogs/merrill_aldrich/archive/2009/07/26/san-disk-array-performance-beware-lun-concatenation.aspx">https://sqlblog.com/blogs/merrill_aldrich/archive/2009/07/26/san-disk-array-performance-beware-lun-concatenation.aspx</a></p>
+<p><em><strong>From Oracle</strong></em><br>
+<a href="https://docs.oracle.com/cd/E19683-01/806-6111/6jf2ve3ga/index.html">https://docs.oracle.com/cd/E19683-01/806-6111/6jf2ve3ga/index.html</a></p>
+<h4 id="lunalignment">LUN alignment</h4>
+<p>I have A LOT to say about LUN alignment issues, due I spent almost a year fixing production environments with Lun's created in a wrong format, because I'm done with it, this is a copy/past from Netapp.com</p>
+<p>File system misalignment is a storage industry problem that generates an un-optimized workload on a storage system.<br>
+Please refer to a complete guide how to address LUN alignment problems on SAN environment on the following guides:</p>
+<p><em><strong>How to identify LUNs misaligned</strong></em><br>
+<a href="https://kb.netapp.com/support/index?page=content&amp;id=1014109&amp;actp=search&amp;viewlocale=en_US&amp;searchid=null">https://kb.netapp.com/support/index?page=content&amp;id=1014109&amp;actp=search&amp;viewlocale=en_US&amp;searchid=null</a></p>
+<p><em><strong>How to create aligned partitions</strong></em><br>
+<a href="https://kb.netapp.com/support/index?page=content&amp;id=1010717&amp;locale=en_US">https://kb.netapp.com/support/index?page=content&amp;id=1010717&amp;locale=en_US</a></p>
+<p><em><strong>Best Practices for File System Alignment in Virtual Environments</strong></em><br>
+<a href="https://media.netapp.com/documents/tr-3747.pdf">https://media.netapp.com/documents/tr-3747.pdf</a></p>
+<h4 id="multipathconfiguration">Multipath configuration</h4>
+<p>A bad multipath configuration can lead to disconnections on the host side, Storage controller work harder<br>
+Following recommendations:<br>
+Ask the sysadmins to contact their vendor and review multipath configuration to support High availability</p>
+<p><em><strong>How to verify HP-UX fibre channel configurations with multipathing I/O (MPIO)</strong></em><br>
+<a href="https://kb.netapp.com/support/index?page=content&amp;id=1010434">https://kb.netapp.com/support/index?page=content&amp;id=1010434</a></p>
+<p><strong>How to verify VMware ESX Fibre Channel configurations with Multipathing I/O (MPIO)</strong><br>
+<a href="https://kb.netapp.com/support/index?page=content&amp;id=1011577">https://kb.netapp.com/support/index?page=content&amp;id=1011577</a></p>
+<p><em><strong>How to verify Windows fibre channel configurations with multipathing I/O (MPIO)</strong></em><br>
+<a href="https://kb.netapp.com/support/index?page=content&amp;id=1012650">https://kb.netapp.com/support/index?page=content&amp;id=1012650</a></p>
+<h4 id="partnerpathconfiguration">Partnerpath configuration</h4>
+<ul>
+<li>Storage Controller work harder</li>
+<li>Performance issues on controller to reach the LUN thru the partner</li>
+</ul>
+<p><em><strong>What do partner path configuration means?</strong></em><br>
+<a href="https://kb.netapp.com/support/index?page=content&amp;id=3010111&amp;actp=LIST_POPULAR">https://kb.netapp.com/support/index?page=content&amp;id=3010111&amp;actp=LIST_POPULAR</a></p>
+<h4 id="incorrectconfigurationorzoning">Incorrect configuration or zoning</h4>
+<p>If needed, go ahead validate your zoning setup configuration with Netapp or SAN vendor<br>
+<em><strong>FiberChannel and iSCSI best practices</strong></em><br>
+<a href="https://library.netapp.com/ecm/ecm_get_file/ECMM1280844">https://library.netapp.com/ecm/ecm_get_file/ECMM1280844</a></p>
+<h4 id="exceedingthecapacitylimits">Exceeding the capacity limits</h4>
+<p>Check Fabric Zoning and host vendors software if clustering or tunning on host side need to investigate further with sysadmins</p>
+<p>Please feel free to contribute with your experience and perspective, on how to address such kind of problems.</p>
+</div>
+            </section>
+
+
+            <footer class="post-full-footer">
+
+                <section class="author-card">
+                        <img class="author-profile-image" src="../../../../content/images/2018/01/yazpik_vancouver2.png" alt="Francisco Moctezuma">
+                    <section class="author-card-content">
+                        <h4 class="author-card-name"><a href="../../../../author/yazpik/">Francisco Moctezuma</a></h4>
+                            <p>OpenSource, Cloud, Linux enthusiast, CKA, everyday self-learner</p>
+                    </section>
+                </section>
+                <div class="post-full-footer-right">
+                    <a class="author-card-button" href="../../../../author/yazpik/">Read More</a>
+                </div>
+
+            </footer>
+
+
+            <section class="post-full-comments">
+                <div id="disqus_thread"></div>
+                <script>
+                    var disqus_config = function () {
+                        this.page.url = 'https://yazpik.github.io/2014/11/27/san_troubleshooting/';
+                        this.page.identifier = 'ghost-5a40757cff3d7c0030750364';
+                    };
+                    (function() {
+                        var d = document, s = d.createElement('script');
+                        s.src = 'https://disqus_vjwjhwrfvb.disqus.com/embed.js';
+                        s.setAttribute('data-timestamp', +new Date());
+                        (d.head || d.body).appendChild(s);
+                    })();
+                </script>
+            </section>
+
+
+        </article>
+
+    </div>
+</main>
+
+<aside class="read-next outer">
+    <div class="inner">
+        <div class="read-next-feed">
+
+                <article class="post-card post tag-sysadmin_life">
+        <a class="post-card-image-link" href="../../../12/07/xacxamayo/">
+            <div class="post-card-image" style="background-image: url(https://images.unsplash.com/photo-1473726867722-6b8a5e529d76?ixlib=rb-0.3.5&amp;q=80&amp;fm=jpg&amp;crop=entropy&amp;cs=tinysrgb&amp;w=1080&amp;fit=max&amp;s=91135714bd185d6c665e42a1dadbc34d)"></div>
+        </a>
+    <div class="post-card-content">
+        <a class="post-card-content-link" href="../../../12/07/xacxamayo/">
+            <header class="post-card-header">
+                    <span class="post-card-tags">Sysadmin life</span>
+                <h2 class="post-card-title">Xacxamayo</h2>
+            </header>
+            <section class="post-card-excerpt">
+                <p>Xacxamayo Episode2 I recently posted on my fb page about a visit to an small-remote town called Xacxamayo in the state of Puebla, Mexico. Basically I was a volunteer for 3 saturdays, I</p>
+            </section>
+        </a>
+        <footer class="post-card-meta">
+                <img class="author-profile-image" src="../../../../content/images/2018/01/yazpik_vancouver2.png" alt="Francisco Moctezuma">
+            <span class="post-card-author"><a href="../../../../author/yazpik/">Francisco Moctezuma</a></span>
+        </footer>
+    </div>
+</article>
+
+                <article class="post-card post tag-cloud">
+        <a class="post-card-image-link" href="../../25/docker/">
+            <div class="post-card-image" style="background-image: url(../../../../content/images/2018/01/docker_logo.png)"></div>
+        </a>
+    <div class="post-card-content">
+        <a class="post-card-content-link" href="../../25/docker/">
+            <header class="post-card-header">
+                    <span class="post-card-tags">Cloud</span>
+                <h2 class="post-card-title">Docker</h2>
+            </header>
+            <section class="post-card-excerpt">
+                <p>Docker If you think you already know all about virtualization, well you should have a look on this... As you may know, there are virtualization technologies such as VMware, VirtualBox and KVM, those</p>
+            </section>
+        </a>
+        <footer class="post-card-meta">
+                <img class="author-profile-image" src="../../../../content/images/2018/01/yazpik_vancouver2.png" alt="Francisco Moctezuma">
+            <span class="post-card-author"><a href="../../../../author/yazpik/">Francisco Moctezuma</a></span>
+        </footer>
+    </div>
+</article>
+
+        </div>
+    </div>
+</aside>
+
+<div class="floating-header">
+    <div class="floating-header-logo">
+        <a href="https://yazpik.github.io">
+                <img src="../../../../content/images/2018/01/favicon2.png" alt="Life of a Sysadmin icon">
+            <span>Life of a Sysadmin</span>
+        </a>
+    </div>
+    <span class="floating-header-divider">—</span>
+    <div class="floating-header-title">SAN Troubleshooting Netapp Storage</div>
+    <div class="floating-header-share">
+        <div class="floating-header-share-label">Share this <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24">
+    <path d="M7.5 15.5V4a1.5 1.5 0 1 1 3 0v4.5h2a1 1 0 0 1 1 1h2a1 1 0 0 1 1 1H18a1.5 1.5 0 0 1 1.5 1.5v3.099c0 .929-.13 1.854-.385 2.748L17.5 23.5h-9c-1.5-2-5.417-8.673-5.417-8.673a1.2 1.2 0 0 1 1.76-1.605L7.5 15.5zm6-6v2m-3-3.5v3.5m6-1v2"></path>
+</svg>
+</div>
+        <a class="floating-header-share-tw" href="https://twitter.com/share?text=SAN%20Troubleshooting%20Netapp%20Storage&amp;url=https://yazpik.github.io/2014/11/27/san_troubleshooting/" onclick="window.open(this.href, 'share-twitter', 'width=550,height=235');return false;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 32 32"><path d="M30.063 7.313c-.813 1.125-1.75 2.125-2.875 2.938v.75c0 1.563-.188 3.125-.688 4.625a15.088 15.088 0 0 1-2.063 4.438c-.875 1.438-2 2.688-3.25 3.813a15.015 15.015 0 0 1-4.625 2.563c-1.813.688-3.75 1-5.75 1-3.25 0-6.188-.875-8.875-2.625.438.063.875.125 1.375.125 2.688 0 5.063-.875 7.188-2.5-1.25 0-2.375-.375-3.375-1.125s-1.688-1.688-2.063-2.875c.438.063.813.125 1.125.125.5 0 1-.063 1.5-.25-1.313-.25-2.438-.938-3.313-1.938a5.673 5.673 0 0 1-1.313-3.688v-.063c.813.438 1.688.688 2.625.688a5.228 5.228 0 0 1-1.875-2c-.5-.875-.688-1.813-.688-2.75 0-1.063.25-2.063.75-2.938 1.438 1.75 3.188 3.188 5.25 4.25s4.313 1.688 6.688 1.813a5.579 5.579 0 0 1 1.5-5.438c1.125-1.125 2.5-1.688 4.125-1.688s3.063.625 4.188 1.813a11.48 11.48 0 0 0 3.688-1.375c-.438 1.375-1.313 2.438-2.563 3.188 1.125-.125 2.188-.438 3.313-.875z"></path></svg>
+        </a>
+        <a class="floating-header-share-fb" href="https://www.facebook.com/sharer/sharer.php?u=https://yazpik.github.io/2014/11/27/san_troubleshooting/" onclick="window.open(this.href, 'share-facebook','width=580,height=296');return false;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 32 32"><path d="M19 6h5V0h-5c-3.86 0-7 3.14-7 7v3H8v6h4v16h6V16h5l1-6h-6V7c0-.542.458-1 1-1z"></path></svg>
+        </a>
+    </div>
+    <progress class="progress" value="0">
+        <div class="progress-container">
+            <span class="progress-bar"></span>
+        </div>
+    </progress>
+</div>
+
+
+
+
+        <footer class="site-footer outer">
+            <div class="site-footer-content inner">
+                <section class="copyright"><a href="https://yazpik.github.io">Life of a Sysadmin</a> © 2018</section>
+                <nav class="site-footer-nav">
+                    <a href="https://yazpik.github.io">Latest Posts</a>
+                    <a href="https://www.facebook.com/yazpik" target="_blank" rel="noopener">Facebook</a>
+                    <a href="https://twitter.com/yazpik" target="_blank" rel="noopener">Twitter</a>
+                    <a href="https://ghost.org" target="_blank" rel="noopener">Ghost</a>
+                </nav>
+            </div>
+        </footer>
+
+    </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous">
+    </script>
+    <script type="text/javascript" src="../../../../assets/js/jquery.fitvids.js?v=70c15f1e7a"></script>
+
+
+    <script>
+
+// NOTE: Scroll performance is poor in Safari
+// - this appears to be due to the events firing much more slowly in Safari.
+//   Dropping the scroll event and using only a raf loop results in smoother
+//   scrolling but continuous processing even when not scrolling
+$(document).ready(function () {
+    // Start fitVids
+    var $postContent = $(".post-full-content");
+    $postContent.fitVids();
+    // End fitVids
+
+    var progressBar = document.querySelector('progress');
+    var header = document.querySelector('.floating-header');
+    var title = document.querySelector('.post-full-title');
+
+    var lastScrollY = window.scrollY;
+    var lastWindowHeight = window.innerHeight;
+    var lastDocumentHeight = $(document).height();
+    var ticking = false;
+
+    function onScroll() {
+        lastScrollY = window.scrollY;
+        requestTick();
+    }
+
+    function onResize() {
+        lastWindowHeight = window.innerHeight;
+        lastDocumentHeight = $(document).height();
+        requestTick();
+    }
+
+    function requestTick() {
+        if (!ticking) {
+            requestAnimationFrame(update);
+        }
+        ticking = true;
+    }
+
+    function update() {
+        var trigger = title.getBoundingClientRect().top + window.scrollY;
+        var triggerOffset = title.offsetHeight + 35;
+        var progressMax = lastDocumentHeight - lastWindowHeight;
+
+        // show/hide floating header
+        if (lastScrollY >= trigger + triggerOffset) {
+            header.classList.add('floating-active');
+        } else {
+            header.classList.remove('floating-active');
+        }
+
+        progressBar.setAttribute('max', progressMax);
+        progressBar.setAttribute('value', lastScrollY);
+
+        ticking = false;
+    }
+
+    window.addEventListener('scroll', onScroll, {passive: true});
+    window.addEventListener('resize', onResize, false);
+
+    update();
+});
+</script>
+
+
+    
+
+</body>
